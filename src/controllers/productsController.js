@@ -34,7 +34,7 @@ const controller = {
 			description: description.trim(),
 			price: +price,
 			discount: +discount,
-			image: 'default-image.png',
+			image: req.file ? req.file.filename : 'default-image.png',
 			category
 		}
 		const productsModify= [...products, newProduct];
