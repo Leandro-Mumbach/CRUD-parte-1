@@ -3,27 +3,15 @@ const express = require('express');
 const router = express.Router();
 
 const{uploadImageProduct} = require('../middlewares/uploadFiles')
-
-// ************ Controller Require ************
 const productsController = require('../controllers/productsController');
+const adminUserCheck = require('../middlewares/adminUserCheck')
 
-/*** GET ALL PRODUCTS ***/ 
 router.get('/', productsController.index); 
-
-/*** CREATE ONE PRODUCT ***/ 
-router.get('/create/', productsController.create); 
+router.get('/create',adminUserCheck, productsController.create); 
 router.post('/store',uploadImageProduct.single('image'), productsController.store); 
-
-
-/*** GET ONE PRODUCT ***/ 
 router.get ('/detail/:id/', productsController.detail); 
-
-/*** EDIT ONE PRODUCT ***/ 
-router.get('/edit/:id', productsController.edit); 
+router.get('/edit/:id',adminUserCheck, productsController.edit); 
 router.put('/update/:id', productsController.update); 
-
-
-/*** DELETE ONE PRODUCT***/ 
 router.delete('/delete/:id', productsController.destroy); 
 
 

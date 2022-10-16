@@ -18,7 +18,9 @@ module.exports = {
                 usuario: usuario.trim(),
                 email: email.trim(),
                 domicilio: domicilio.trim(),
-                password: bcryptjs.hashSync(password, 10)
+                password: bcryptjs.hashSync(password, 10),
+                rol: 'user',
+                avatar: null
             }
 
             let userModify = [...users, newUsers];
@@ -36,9 +38,28 @@ module.exports = {
     processLogin: (req, res) => {
         let errors = validationResult(req)
         if(errors.isEmpty()){
-           res.redirect('/products/create')
+
+            let {id,name,username,rol,avatar} = loadUsers().find(user => user.email === req.body.email)
+            req.session.userLogin = {
+                id,
+                username,
+                name,
+                rol,
+                avatar
+            }
+
+        if(req.body.remember){
+            res.cookie('mercadoLiebre',req.session.userLogin, {
+                maxAge : 3000 * 60
+            })
+        }
+           return res.redirect('/')
         } else {
           return res.render('login', {errors: errors.mapped()})
         }
+    },
+    logout: (req,res) => {
+        req.session.destroy()
+        return res.redirect('/')
     }
 }
